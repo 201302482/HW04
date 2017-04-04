@@ -1,10 +1,12 @@
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Stack;
 
 public class Calculate {
     private Stack<Character> _oStack;
     private Stack<Double> _vStack;
     private char[] _infix;
-    private char[] _postfix;
+    private ArrayList<String> _postfix;
     
     public Calculate()
     {
@@ -39,7 +41,8 @@ public class Calculate {
     	int p;
     	char curToken, poppedToken, topToken;
     	this._oStack = new Stack<Character>();
-    	this._postfix = new char[this._infix.length+1];
+    	this._postfix = new ArrayList();
+    	
     	i = 0;
     	p = 0;
     	
@@ -51,7 +54,12 @@ public class Calculate {
     			System.exit(0);
     		}
     		else if(Character.isDigit(curToken)) {
-    			_postfix[p++] = curToken;
+    			StringBuilder buf = new StringBuilder(Character.toString(curToken)); 
+    			while(i<_infix.length && Character.isDigit(_infix[i])){
+    				buf.append(_infix[i]);
+    				i++; 
+    			}
+    			_postfix.add(buf.toString());
     		}
     		else{
     			if( curToken == ')' ){
@@ -62,7 +70,7 @@ public class Calculate {
     					return false;
     				
     				while(poppedToken != '(' ){
-    					_postfix[p++] = poppedToken;
+    					_postfix.add(Character.toString(poppedToken));
     					if (! _oStack.isEmpty() ){
     						poppedToken = (char) _oStack.pop();
     					}
@@ -76,7 +84,7 @@ public class Calculate {
     					topToken = (char) _oStack.peek();
     					while(inStackPrecedence(topToken) >= inComingP) {
     						poppedToken = (char) _oStack.pop();
-    						_postfix[p++] = poppedToken;
+    						_postfix.add(Character.toString(poppedToken));
     						if( !_oStack.isEmpty() )
     							topToken = (char)_oStack.peek();
     						else
@@ -89,7 +97,7 @@ public class Calculate {
     		}
     	}
     	if ( !this._oStack.isEmpty()){
-    	this._postfix[p++] = this._oStack.pop();
+    	this._postfix.add(Character.toString(this._oStack.pop()));
     	}
         return true;
     	}
@@ -144,16 +152,16 @@ public class Calculate {
     public double evalPostfix()
     {
     	int p;
-    	char curToken;
+    	String curToken;
     	this._vStack = new Stack<Double>();
-
+    	Iterator<String> iter = this._postfix.iterator();
     	
     	p = 0;
     	
-    	while(p<this._postfix.length)
+    	while(iter.hasNext())
     	{
-    		curToken = _postfix[p++];
-    		if (Character.isDigit(curToken)){
+    		curToken = iter.next();
+    		if (Character.isDigit(curToken.charAt(0))){
     			this._vStack.push(Double.parseDouble(String.valueOf(curToken)));
   
     		}
@@ -163,7 +171,7 @@ public class Calculate {
     			double pre = this._vStack.pop();
     			double result = 0;
     			
-    			final Operator operator = Operator.findOperator(curToken);
+    			final Operator operator = Operator.findOperator(curToken.charAt(0));
     			try{
     			result = operator.evaluate(pre, cur);
     			} catch(ArithmeticException e){
