@@ -14,7 +14,12 @@ public enum Operator{
 	},
 	DIV('/'){
 		@Override
-		public double evaluate(double firstOperand,double secondOperand){ return firstOperand / secondOperand; }
+		public double evaluate(double firstOperand,double secondOperand){ 
+			if (secondOperand == 0){
+				throw new ArithmeticException("0으로 나누었습니다.");
+			}
+			return firstOperand / secondOperand;
+	}
 	};
 	
 	private final char symbol;

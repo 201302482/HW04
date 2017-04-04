@@ -164,7 +164,13 @@ public class Calculate {
     			double result = 0;
     			
     			final Operator operator = Operator.findOperator(curToken);
+    			try{
     			result = operator.evaluate(pre, cur);
+    			} catch(ArithmeticException e){
+    				System.out.print("\n"+e);
+    				System.exit(0);
+    			}
+    			
     			this._vStack.push(result);
     			}
     			else
