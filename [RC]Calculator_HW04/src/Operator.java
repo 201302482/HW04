@@ -1,31 +1,32 @@
 
 public enum Operator{
-	ADD("+"){
+	ADD('+'){
 		@Override
 		public double evaluate(double firstOperand,double secondOperand){ return firstOperand + secondOperand; }
 	},
-	SUB("-"){
+	SUB('-'){
 		@Override
 		public double evaluate(double firstOperand,double secondOperand){ return firstOperand - secondOperand; }
 	},
-	MUL("*"){
+	MUL('*'){
 		@Override
 		public double evaluate(double firstOperand,double secondOperand){ return firstOperand * secondOperand; }
 	},
-	DIV("/"){
+	DIV('/'){
 		@Override
 		public double evaluate(double firstOperand,double secondOperand){ return firstOperand / secondOperand; }
 	};
 	
-	private final String symbol;
+	private final char symbol;
 
-	Operator(String symbol){ this.symbol = symbol;}
+	Operator(char symbol){ this.symbol = symbol;}
 
 	public abstract double evaluate(double firstOperand, double secondOperand);
 
-	public static Operator findOperator(String symbol){
+	public static Operator findOperator(char symbol){
 		for(Operator op : values()){
-			if(op.symbol.equals(symbol)){
+			if(op.symbol == symbol){
+			
 				return op;
 			}
 		}
